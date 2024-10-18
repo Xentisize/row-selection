@@ -36,41 +36,36 @@ const CsvTable = () => {
 		}
 	};
 
-	const columns = React.useMemo(
-		() => [
-			{
-				id: 'select',
-				header: ({ table }) => (
+	const columns = [
+		{
+			id: 'select',
+			header: ({ table }) => (
+				<IndeterminateCheckbox
+					{...{
+						checked: table.getIsAllRowsSelected(),
+						indeterminate: table.getIsSomeRowsSelected(),
+						onChange: table.getToggleAllRowsSelectedHandler(),
+					}}
+				/>
+			),
+			cell: ({ row }) => (
+				<div className="px-1">
 					<IndeterminateCheckbox
 						{...{
-							checked: table.getIsAllRowsSelected(),
-							indeterminate: table.getIsSomeRowsSelected(),
-							onChange: table.getToggleAllRowsSelectedHandler(),
+							checked: row.getIsSelected(),
+							disabled: !row.getCanSelect(),
+							indeterminate: row.getIsSomeSelected(),
+							onChange: row.getToggleSelectedHandler(),
 						}}
 					/>
-				),
-				cell: ({ row }) => (
-					<div className="px-1">
-						<IndeterminateCheckbox
-							{...{
-								checked: row.getIsSelected(),
-								disabled: !row.getCanSelect(),
-								indeterminate: row.getIsSomeSelected(),
-								onChange: row.getToggleSelectedHandler(),
-							}}
-						/>
-					</div>
-				),
-			},
-			...(Object.keys(data[0] || {}).map((key) => ({
-				accessorKey: key,
-				header: key,
-			})) as ColumnDef<CsvData>[]),
-		],
-		[]
-	);
-
-	console.log(Object.keys(data[0] || {}));
+				</div>
+			),
+		},
+		...(Object.keys(data[0] || {}).map((key) => ({
+			accessorKey: key,
+			header: key,
+		})) as ColumnDef<CsvData>[]),
+	];
 
 	const table = useReactTable({
 		data,
@@ -107,6 +102,7 @@ const CsvTable = () => {
 				</label>
 				<input id="csvUpload" type="file" accept=".csv" onChange={handleFileUpload} className="hidden" />
 			</div>
+
 			<table className="table-auto w-full">
 				<thead>
 					{table.getHeaderGroups().map((headerGroup) => (
@@ -136,6 +132,7 @@ const CsvTable = () => {
 					))}
 				</tbody>
 			</table>
+
 			<button
 				onClick={handleSave}
 				disabled={table.getSelectedRowModel().rows.length === 0}
