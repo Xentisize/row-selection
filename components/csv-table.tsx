@@ -39,7 +39,7 @@ const CsvTable = () => {
 	const columns = [
 		{
 			id: 'select',
-			header: ({ table }) => (
+			header: ({ table }: { table: any }) => (
 				<IndeterminateCheckbox
 					{...{
 						checked: table.getIsAllRowsSelected(),
@@ -48,7 +48,7 @@ const CsvTable = () => {
 					}}
 				/>
 			),
-			cell: ({ row }) => (
+			cell: ({ row }: { row: any }) => (
 				<div className="px-1">
 					<IndeterminateCheckbox
 						{...{
